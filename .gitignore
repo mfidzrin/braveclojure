@@ -23,3 +23,5 @@ pom.xml.asc
 /ch3/.clj-kondo
 /ch3/.lsp
 /ch3/.nrepl-port
+
+ch3/.nrepl-port
