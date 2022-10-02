@@ -212,7 +212,7 @@ failed-protagonist-names
 (inc 1.1)
 
 (map inc [0 1 2 3]) ;; note that map doesn't return a vector, even though we supploed a vector as an argument
-                    ;; We'll learn why in Chapter 4
+;; We'll learn why in Chapter 4
 
 ;; here is how Clojure would evalueate a function call
 ;; see these operations as steps
@@ -272,3 +272,69 @@ failed-protagonist-names
        x
        y)) ;; 2-arity function
 (two-params "Nothing" "Nothing")
+
+;; Functions also support arity overloading
+;; this means that we can define a function with multiple body
+;; and it will run depending on the arity.
+
+(defn do-things
+  [& _args]
+  (str "Do nothing")) ;; made up function to make below function linting error disappear
+(defn multi-arity
+  ;; 3-arity arguments and body
+  ([first-arg second-arg third-arg]
+   (do-things first-arg second-arg third-arg))
+  ;; 2-arity arguments and body
+  ([first-arg second-arg]
+   (do-things first-arg second-arg))
+  ([first-arg]
+   (do-things first-arg)))
+
+(defn multi-arity-2
+  ([x y]
+   (str "Two parameters! That's nothing! Pah! I will smossh them "
+        "together to spite you!"
+        x
+        y))
+  ([x]
+   (str "I take one parameter: " x))
+  ([]
+   "I take no parameters!"))
+
+(multi-arity-2 "Nothing")
+
+;; Arity overloading is one way to provide default values for arguments
+(defn x-chop
+  "Describe the kind of chop you're inflicting on someone"
+  ([name chop-type]
+   (str "I " chop-type " chop " name "! Take that!"))
+  ([name]
+   (x-chop name "karate")))
+
+(x-chop "Kanye West" "slap")
+
+(x-chop "Jasf")
+
+;; Clojure also allows us to define variable-arity functions
+;; it's called rest parameter which indicated by ampersand (&)
+;; as in "put the rest of these arguments in a list with the following name"
+;; arguments treated as a list
+
+(defn codger-communication
+  [whippersnapper]
+  (str "Get off my lawn, " whippersnapper "!!!"))
+
+(defn codger
+  [& whippersnappers]
+  (map codger-communication whippersnappers))
+
+(codger "Billy" "Anne-Marie" "The Incredible Hulk")
+
+;; We can mix rest parameters with normal parameters but the rest parameter has to come last
+(defn favorite-things
+  [name & things]
+  (str "Hi, " name ", here are my favorite things: " (clojure.string/join ", " things)))
+
+(favorite-things "Doreen" "gum" "shoes" "kara-te")
+
+;; Destructuring
