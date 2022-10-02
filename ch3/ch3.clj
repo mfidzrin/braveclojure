@@ -160,3 +160,114 @@ failed-protagonist-names
 ;; Good rule of thumb when to use list
 ;; when we want to easily add items to the beginning of a sequence or
 ;; when we're writing a macro
+
+;; Sets
+;; Sets are collections of unique values
+;; Have 2 kinds of sets: hash sets and sorted sets
+;; Hash set:
+(def one-set #{"kurt vonegut" 20 :icicle})
+
+;; can use hash-set operator to create a set:
+(hash-set "kurt vonegut" 20 :icicle)
+
+(conj #{:a :b} :b) ;; when added existing value, nothing happens
+
+;; creating sets from vectors
+(set [3 3 3 4 4])
+
+(contains? one-set :a) ;; would return false
+
+(contains? one-set :icicle) ;; would return true
+
+(contains? #{nil} nil)
+
+;; using keyword to get value from a set
+(:icicle one-set)
+;; using get to get value from a set
+(get one-set 20)
+
+
+;; Functions
+;; Calling functions
+(+ 1 2 3 4)
+(* 1 2 3 4)
+(first [1 2 3 4])
+(last [1 2 3 4])
+(nth [1 2 3 4] 1)
+
+;; same syntax across Clojure operations
+;; in the form of:
+;; (operator operand1 operand2 ... operandnth)
+;;
+(or + -)
+
+((or + -) 1 2 3) ;; from previous exercise, or return the first truthy value
+
+((and (= 1 1) +) 1 2 3) ;; from previous exercise, and return the first falsey value or last value
+
+(1 2 3 4) ;; not a valid function call since numbers aren't functions
+("first" 1 2 3 4) ;; not a valid function call since strings aren't functions
+
+;; higher order functions
+(inc 1.1)
+
+(map inc [0 1 2 3]) ;; note that map doesn't return a vector, even though we supploed a vector as an argument
+                    ;; We'll learn why in Chapter 4
+
+;; here is how Clojure would evalueate a function call
+;; see these operations as steps
+(+ (inc 199) (/ 100 (- 7 2)))
+(+ 200 (/ 100 (- 7 2))) ;; evalutated "(inc 199)"
+(+ 200 (/ 100 5)) ;; evaluated (- 7 2)
+(+ 200 20) ;; evaluated (/ 100 5)
+220 ;; final evaluation
+
+;; Function Calls, Macro Calls, and Special Forms
+;; Macro calls and Special forms evaluate their operands differently from normal functions calls
+;; and they also can't be passed as arguments to functions
+
+;; Defining Functions
+;; functions definitions are composed of five main parts:
+;; - defn
+;; - function name
+;; - a docstring describing the function (optional)
+;; - parameters listed in brackets
+;; - function body
+;; examples:
+
+(defn too-enthusiastic
+  "Return a cheer that might be a bit too enthisiastic"
+  [name]
+  (str
+   "OH. MY. GOD! "
+   name
+   " YOU ARE MOST DEFINITELY LIKE THE BEST"
+   "MAN SLASH WOMAN EVER I LOVE YOU AND WE SHOULD RUN AWAY SOMEWHERE"))
+
+(too-enthusiastic "Zelda")
+
+;; what is docstring?
+;; The docstring is a useful way to describe and document your code.
+;; You can view the docstring for a function in the REPL via (doc <fn-name>)
+;; For example:
+(doc map) ;; return a nill but a description of this function map will be display in the REPL
+
+;; what is parameters and arity?
+;; Clojure functions can be defined with zero or more parameters.
+;; The value we pass to functions are called arguments (which can be any type)
+;; The number of parameters is the function's arity.
+;; Here are some function definitions with different arities:
+(defn no-params
+  []
+  "I take no parameters!") ;; 0-arity function
+
+(defn one-param
+  [x]
+  (str "I take one parameter: " x)) ;; 1-arity function
+
+(defn two-params
+  [x y]
+  (str "Two parameters! That's nothing! Pah! I will smossh them "
+       "together to spite you!"
+       x
+       y)) ;; 2-arity function
