@@ -338,3 +338,61 @@ failed-protagonist-names
 (favorite-things "Doreen" "gum" "shoes" "kara-te")
 
 ;; Destructuring
+;; Vectors
+(defn my-first
+  [[first-thing _  _]]
+  first-thing)
+
+(my-first ["oven" "bike" "war-axe"])
+
+(defn choose
+  [[first-choice second-choice & unimportant-choices]]
+  (println (str "Your first choice is: " first-choice))
+  (println (str "Your second choice is: " second-choice))
+  (println (str "We're ignoring the rest of your choices."
+                "Here they are in case you need to cry over them: "
+                (clojure.string/join ", " unimportant-choices))))
+
+(choose ["one" "two" "three" "four"])
+
+;; Maps
+(defn announce-treasure-location
+  [{lat :lat lng :lng}]
+  (println (str "Treasure lat: " lat))
+  (println (str "Treasure lng: " lng)))
+
+(announce-treasure-location {:lat 28.22 :lng 81.33})
+
+;; break keywords out of a map
+(defn announce-treasure-location
+  [{:keys [lat lng]}]
+  (println (str "Treasure lat: " lat))
+  (println (str "Treasure lng: " lng)))
+
+;; Function Body
+;; Function body can contain forms of any kind
+;; Clojure automatically returns the last form evaluated
+(defn illustrative-function
+  []
+  (+ 1 304)
+  20
+  "joe")
+
+(illustrative-function)
+
+;; body function using if expression
+(defn number-comment
+  [x]
+  (if (> x 6)
+    "Oh my gosh! What a big number!"
+    "That number's OK, I guess"))
+
+(number-comment 5)
+
+(number-comment 7)
+
+;; Anonymous Function
+;; (fn [param-list]
+;;  function body)
+(map (fn [name] (str "Hi, " name))
+     ["Darth Vader" "Aloha "])
