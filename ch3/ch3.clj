@@ -448,3 +448,57 @@ failed-protagonist-names
                              {:name "left-lower-leg" :size 3}
                              {:name "left-achilles"  :size 1}
                              {:name "left-foot"      :size 2}])
+
+(defn matching-part
+  [part]
+  {:name (clojure.string/replace (:name part) #"^left-" "right-")
+   :size (:size part)})
+
+(defn symmetrize-body-part
+  "Expects a seq of maps that have a :name and :size"
+  [asym-body-parts]
+  (loop [remaining-asym-parts asym-body-parts
+         final-body-parts []]
+    (if (empty? remaining-asym-parts)
+      final-body-parts
+      (let [[part & remaining] remaining-asym-parts]
+        (recur remaining
+               (into final-body-parts
+                     (set [part (matching-part part)])))))))
+
+(symmetrize-body-part asym-hobbit-body-parts)
+
+;; Code break down
+;; let
+
+;; let binds names to values
+(let [x 3] ;; x is a name with a binding value of 3
+  x)
+
+(def dalmation-list
+  ["Pongo" "Perdita" "Puppy 1" "Puppy 2"])
+(let [dalmations (take 2 dalmation-list)]
+  dalmations)
+
+;; let also introduce new scope
+
+(def x 0)
+x ;; => 0
+(let [x 1] x) ;; => 1
+
+;; reference existing bindings in let
+(let [x (inc x)] x)
+;; above example show x inside the (inc x) refers to the binding created by (def x 0)
+
+;; usage of rest parameters & in let
+(let [[pongo & dalmations] dalmation-list]
+  [pongo dalmations])
+
+;; loop
+(defn test-it
+  []
+  (loop [iteration 0]
+  (println (str "Iteration " iteration))
+  (if (> iteration 3)
+    (println "Goodbye!")
+    (recur (inc iteration)))))
