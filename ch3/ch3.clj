@@ -502,3 +502,54 @@ x ;; => 0
   (if (> iteration 3)
     (println "Goodbye!")
     (recur (inc iteration)))))
+
+;; Regular Expressions
+;; #"regular-expresstion"
+
+(re-find #"^left-" "left-eye")
+
+(re-find #"^left-" "cleft-chin")
+
+(re-find #"^left-" "wongleblart")
+
+(defn matching-part
+  [part]
+  {:name (clojure.string/replace (:name part) #"^left-" "right-")
+   :size (:size part)})
+
+(matching-part {:name "left-eye" :size 1})
+
+(matching-part {:name "head" :size 3})
+
+;; Better Symmetrizer with reduce
+(reduce + [1 2 3 4])
+
+;; similar to
+(+ (+ (+ 1 2) 3) 4)
+
+;; The reduce function works according to the following steps:
+;; 1. Apply the given function to the first elements of a sequece.
+;; 2. Apply the given function to the result and the next element of the sequence.
+;; 3. Repeat step 2 for every remaining element in the sequence.
+;;
+;; reduce also takes an optional initial value.
+;; The initial value here is 15:
+(reduce + 15 [1 2 3 4])
+
+;; reduce also can be used to retur an even larger collection that the one we started with
+(defn my-reduce
+  ([f initial coll]
+   (loop [result initial
+          remaining coll]
+     (if (empty? remaining)
+       result
+       (recur (f result (first remaining)) (rest remaining)))))
+  ([f [head & tail]]
+   (my-reduce f head tail)))
+
+(defn better-symmetrize-body-parts
+  "Expects a seq of maps that have a :name and :size"
+  [asym-body-parts]
+  (reduce #(into %1 (set [%2 (matching-part %2)]))
+          []
+          asym-body-parts))
