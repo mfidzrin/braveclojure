@@ -498,10 +498,10 @@ x ;; => 0
 (defn test-it
   []
   (loop [iteration 0]
-  (println (str "Iteration " iteration))
-  (if (> iteration 3)
-    (println "Goodbye!")
-    (recur (inc iteration)))))
+    (println (str "Iteration " iteration))
+    (if (> iteration 3)
+      (println "Goodbye!")
+      (recur (inc iteration)))))
 
 ;; Regular Expressions
 ;; #"regular-expresstion"
@@ -553,3 +553,82 @@ x ;; => 0
   (reduce #(into %1 (set [%2 (matching-part %2)]))
           []
           asym-body-parts))
+
+(defn hit
+  [asym-body-parts]
+  (let [sym-parts (better-symmetrize-body-parts asym-body-parts)
+        body-part-size-num (reduce + (map :size sym-parts))
+        target (rand body-part-size-num)]
+    (loop [[part & remaining] sym-parts
+           accumulated-size (:size part)]
+      (if (> accumulated-size target)
+        part
+        (recur remaining (+ accumulated-size (:size (first remaining))))))))
+
+(hit asym-hobbit-body-parts)
+
+;; Exercises
+
+;; 1. Use the str, vector, list, hash-map, and hash-set functions.
+(defn greeting
+  [name]
+  (str "Hello, " name))
+
+(greeting "Fidzrin")
+
+(vector 1 2 3)
+
+(list 1 2 3)
+
+(hash-map :latitude 10 :longiture 20)
+
+(hash-set 1 2 3)
+
+;; 2. Write a function that takes anumber and adds 100 to it.
+
+(defn add-100
+  "Add 100 to the argument provided"
+  [number]
+  (+ number 100))
+
+(add-100 5)
+
+;; 3. Write a function, dec-maker, that works exactly like the function inc-maker except with substration:
+(defn dec-maker
+  "Decrementor"
+  [dec-by]
+  #(- % dec-by))
+(def dec9 (dec-maker 9))
+(dec9 10)
+
+;; 4. Write a function, mapset, that works like map except the return value is a set:
+(defn mapset
+  [func number]
+  (set (map func number)))
+
+(mapset inc [1 1 2 2])
+
+;; 5. Create a function that's similar to symmetrize-body-parts except that it has to work with weird space aliens
+;; with radial symmetry. Instead of two eyes, arms, legs and so on, they have five.
+(defn- replace-part
+  [part pre]
+  {:name (clojure.string/replace (:name part) #"^left-" pre)
+   :size (:size part)})
+
+(defn matching-part-radial
+  [part]
+  (vector (replace-part part "right-")
+          (replace-part part "top-")
+          (replace-part part "bottom-")
+          (replace-part part "middle-")))
+
+(flatten [{:name "test" :size 1} {:name "test2" :size 2}])
+
+(defn better-symmetrize-body-parts-2
+  "Expects a seq of maps that have a :name and :size"
+  [asym-body-parts]
+  (reduce #(into %1 (set (flatten [%2 (matching-part-radial %2)])))
+          []
+          asym-body-parts))
+
+(better-symmetrize-body-parts-2 asym-hobbit-body-parts)
